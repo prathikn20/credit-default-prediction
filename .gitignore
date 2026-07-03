@@ -1,0 +1,14 @@
+# Local Claude Code config
+CLAUDE.md
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Model artifacts and data
+*.pkl
+*.joblib
+data/*
+!data/.gitkeep
