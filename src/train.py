@@ -5,13 +5,13 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import recall_score, roc_auc_score
+from sklearn.metrics import precision_score, recall_score, roc_auc_score
 
 import joblib
 
 
 #Import dataset
-path = "../data/UCI_credit_default.xls"
+path = "data/UCI_credit_default.xls"
 df = pd.read_excel(path, header = 1)
 
 #Preprocess data
@@ -36,7 +36,7 @@ preprocessor = ColumnTransformer(
 )
 
 #Hyperparameter tuning
-depths = [1, 2, 3, 4, 5, 6, 7]
+depths = [7, 8, 9, 10, 12, 15]
 leaves = [1, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 
 best_score = -1
@@ -51,7 +51,8 @@ for depth in depths:
                                           max_depth=depth, 
                                           min_samples_leaf=leaf,
                                           class_weight='balanced',
-                                          random_state=42))
+                                          random_state=42,
+                                          n_jobs=-1))
         ])
 
         pipe.fit(X_train, y_train)
@@ -63,4 +64,25 @@ for depth in depths:
             best_depth = depth
             best_leaf = leaf
 
+print(f"Best Score: {best_score}, Best Max Depth: {best_depth}, Best Min Samples Lead: {best_leaf}")
 
+pipe = Pipeline([
+        ('preprocessor', preprocessor),      
+        ('classifier', RandomForestClassifier(n_estimators= 200,
+                                          max_depth=best_depth, 
+                                          min_samples_leaf=best_leaf,
+                                          class_weight='balanced',
+                                          random_state=42,
+                                          n_jobs = -1))
+        ])
+
+pipe.fit(X_temp, y_temp)
+
+AUC_score = roc_auc_score(y_test, pipe.predict_proba(X_test)[:, 1])
+y_pred = (pipe.predict_proba(X_test)[:, 1] >= 0.4).astype(int)
+recall = recall_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
+
+print(f"AUC: {AUC_score:.3f}, Recall @ 0.4: {recall:.3f}, Precision @ 0.4: {precision:.3f}")
+
+joblib.dump(pipe, "models/credit_pipeline.joblib")
