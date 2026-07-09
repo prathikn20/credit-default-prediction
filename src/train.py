@@ -66,6 +66,7 @@ for depth in depths:
 
 print(f"Best Score: {best_score}, Best Max Depth: {best_depth}, Best Min Samples Lead: {best_leaf}")
 
+#Serialization of the model
 pipe = Pipeline([
         ('preprocessor', preprocessor),      
         ('classifier', RandomForestClassifier(n_estimators= 200,
@@ -78,6 +79,7 @@ pipe = Pipeline([
 
 pipe.fit(X_temp, y_temp)
 
+#Checking model quality
 AUC_score = roc_auc_score(y_test, pipe.predict_proba(X_test)[:, 1])
 y_pred = (pipe.predict_proba(X_test)[:, 1] >= 0.4).astype(int)
 recall = recall_score(y_test, y_pred)
