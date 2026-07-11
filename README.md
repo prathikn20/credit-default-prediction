@@ -52,6 +52,42 @@ from the repo root.
 
 One thing to acknowledge is that although the page loads and the model works consistently, that doesn't mean the model is correct.
 
+Example request:
+
+```json
+{
+  "LIMIT_BAL": 20000,
+  "SEX": 2,
+  "EDUCATION": 2,
+  "MARRIAGE": 1,
+  "AGE": 24,
+  "PAY_0": 0,
+  "PAY_2": 0,
+  "PAY_3": 0,
+  "PAY_4": 0,
+  "PAY_5": 0,
+  "PAY_6": 0,
+  "BILL_AMT1": 0,
+  "BILL_AMT2": 0,
+  "BILL_AMT3": 0,
+  "BILL_AMT4": 0,
+  "BILL_AMT5": 0,
+  "BILL_AMT6": 0,
+  "PAY_AMT1": 0,
+  "PAY_AMT2": 0,
+  "PAY_AMT3": 0,
+  "PAY_AMT4": 0,
+  "PAY_AMT5": 0,
+  "PAY_AMT6": 0
+}
+```
+
+Response:
+
+```json
+{"prediction": "Default", "probability": 0.5616042573077882}
+```
+
 ## Model Deployment
 
 The model needs to be containerized since a joblib model is version-sensitive, so I used Docker to freeze the different versions of modules and Python, the dependencies, code, and model into a reproducible image.
