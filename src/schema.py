@@ -1,9 +1,9 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 class CreditApplication(BaseModel):
     LIMIT_BAL: int
     SEX: int
-    EDUCATION: int
+    EDUCATION: int = Field(ge=0, le=6)
     MARRIAGE: int
     AGE: int
     PAY_0: int
